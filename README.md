@@ -174,6 +174,7 @@ describe('making a post', function(){
     })
 })
 
+```
 
 ## A couple of words about our three environments
 
@@ -192,8 +193,6 @@ module.exports = {
 
 ```
 Here you can see that the default port is 8080. But I want my tests to run no matter whether I have a dev server running, so in my protractor setup, I'm going to set the PORT to 3000, then run the server.js file with that port. 
-
-
 
 
 
