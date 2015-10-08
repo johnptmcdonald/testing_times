@@ -198,7 +198,7 @@ Here you can see that the default port is 8080. But I want my tests to run no ma
 
 # Part 2: Unit tests
 
-## Testing the server - Mocha/Chai
+## 2a - Testing the server - Mocha/Chai
 
 Inside our server folder we'll make a new folder called controllers, and inside that we'll make a new directory called api, then inside that we'll make our users.spec.js file
 
@@ -331,7 +331,9 @@ afterEach(function(){
 
 ```
 
+## 2b - Testing the client - Karma/Jasmine
+
+....To be continued
 
 
 
-# testing_times
