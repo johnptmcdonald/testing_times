@@ -15,17 +15,31 @@ describe('controllers.users', function () {
   })
 })
 
-describe('info at root directory', function(){
-	it('does something', function(done){
+describe('controllers.users unauthenticated route', function(){
+    it('responds with a test message', function(done){
 
-		request('http://localhost:3000')
-		.get('/api/users')
-		.set('x-access-token', token)
-		.set('Content-Type', 'application/json')
-		.expect(200)
-		.end(done)
-			
-	})
+        request('http://localhost:3000')
+        .get('/api/test')
+        .set('Content-Type', 'application/json')
+        .end(function(err, response){
+        	expect(response.body.message).to.include("apiRouter works")
+        	done()
+        })
+
+    })
+})
+
+describe('controller.users index ', function(){
+    it('returns a 200', function(done){
+
+        request('http://localhost:3000')
+        .get('/api/users')
+        .set('x-access-token', token)
+        .set('Content-Type', 'application/json')
+        .expect(200)
+        .end(done)
+            
+    })
 })
 
 

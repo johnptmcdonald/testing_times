@@ -33,7 +33,7 @@ npm install protractor --save-dev
 Protractor comes with a utility for setting up WebDriver with Selenium. Let's do that now:
 
 ```
-$ ./node_modules/.bon/webdriver-manager update
+$ ./node_modules/.bin/webdriver-manager update
 ```
 
 Take a look at the starter code (modified from a Scotch.io app), as we're going to writing a few tests for this simple app. 
@@ -222,7 +222,7 @@ process.env.PORT = 3000
 process.env.NODE_ENV = 'test'
 require('../../../../server')
 
-var createUser = require('../../support/user')
+
 ```
 
 This is an easy one to check that something exists:
@@ -235,9 +235,43 @@ describe('controllers.users', function () {
 })
 ```
 
-But we have to do better. Remember we need to be testing our api endpoints, so it is api/users, not just /users.
+So how do we actually run the tests?
 
-These endpoints are all secured. So we need to create a user and get a JWT before we hit the endpoint.
+```
+$ mocha test/server/controllers/api/posts.spec.js
+```
+
+Nice!
+
+But it's a pain to write all this out every time. We need am options file that tells it to run all the tests in the server folder when we call 'mocha'. In the root of the test folder, make a new file called mocha.opts:
+
+```
+test/server
+--recursive
+
+```
+
+This is a nice test and everything, but we have to do better. We need to be testing our api. (so it will be api/users, not just /users)
+
+Let's test an UNsecured API route:
+
+```
+describe('controllers.users unauthenticated route', function(){
+    it('responds with a test message', function(done){
+
+        request('http://localhost:3000')
+        .get('/api/test')
+        .set('Content-Type', 'application/json')
+        .end(function(err, response){
+            expect(response.body.message).to.include("apiRouter works")
+            done()
+        })
+
+    })
+})
+```
+
+Great, but our real API endpoints are all secured. We need to create a user and get a JWT before we hit the endpoint.
 
 So we need to make a support file in server/support/user.js
 
@@ -254,9 +288,9 @@ var superSecret = config.secret
 function createUser(name, username, password, cb) {
 
     var user = new User();      // create a new instance of the User model
-    user.name = name;  // set the users name (comes from the request)
-    user.username = username;  // set the users username (comes from the request)
-    user.password = password;  // set the users password (comes from the request)
+    user.name = name;  // set the users name (normally comes from the request)
+    user.username = username;  // set the users username (normally comes from the request)
+    user.password = password;  // set the users password (normally comes from the request)
 
     user.save(function(err) {
         if (err) {
@@ -281,7 +315,7 @@ module.exports = createUser
 
 ```
 
-we now have to make this user in the actual spec file, grab his JWT, then put in in the supertest http request:
+we now have to make this user in the actual spec file, grab his/her JWT, then put in in the supertest http request:
 
 ```
 var expect = require('chai').expect
@@ -301,8 +335,8 @@ describe('controllers.users', function () {
   })
 })
 
-describe('info at root directory', function(){
-    it('does something', function(done){
+describe('controller.users index ', function(){
+    it('returns a 200', function(done){
 
         request('http://localhost:3000')
         .get('/api/users')
@@ -330,6 +364,11 @@ afterEach(function(){
 })
 
 ```
+
+Notice we used a beforeEach to make an authenticated user before each test. 
+
+Afterwards we scrubbed the DB.
+
 
 ## 2b - Testing the client - Karma/Jasmine
 

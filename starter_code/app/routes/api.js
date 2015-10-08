@@ -11,6 +11,9 @@ module.exports = function(app, express) {
 
 	var apiRouter = express.Router();
 
+	apiRouter.get('/test', function(req, res){
+		res.json({message: "apiRouter works"})
+	})
 	// route to generate sample user
 	apiRouter.post('/sample', sampleUsersController.create);
 
